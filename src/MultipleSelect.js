@@ -83,6 +83,7 @@ class MultipleSelect {
 
   init () {
     const $ul = $('<ul></ul>')
+    const multipleWidth = this.options.multipleWidth || Math.floor(100 / this.options.multipleColumns * 100) / 100 + '%'
 
     this.$drop.html('')
 
@@ -111,10 +112,12 @@ class MultipleSelect {
     $ul.append(sprintf`<li class="ms-no-results">${s}</li>`(
       this.options.formatNoMatchesFound()
     ))
-    this.$drop.append($ul)
+    this.$ulParent = $('<div class="ul-parent"></div>')
+    this.$ulParent.append($ul)
+    this.$drop.append(this.$ulParent)
 
     this.$drop.find('ul').css('max-height', `${this.options.maxHeight}px`)
-    this.$drop.find('.multiple').css('width', `${this.options.multipleWidth}px`)
+    this.$drop.find('.multiple').css('width', multipleWidth)
 
     this.$searchInput = this.$drop.find('.ms-search input')
     this.$selectAll = this.$drop.find(`input[${this.selectAllName}]`)
@@ -143,7 +146,7 @@ class MultipleSelect {
     const $elm = $(elm)
     const classes = $elm.attr('class') || ''
     const title = sprintf`title="${s}"`($elm.attr('title'))
-    const multiple = this.options.multiple ? 'multiple' : ''
+    const multiple = (this.options.multipleColumns > 1 || this.options.multipleWidth) ? 'multiple' : ''
     let disabled
     const type = this.options.single ? 'radio' : 'checkbox'
 
@@ -597,8 +600,8 @@ const defaults = {
   ellipsis: false,
 
   single: false,
-  multiple: false,
-  multipleWidth: 80,
+  multipleColumns: 1,
+  multipleWidth: undefined,
   hideOptgroupCheckboxes: false,
   width: undefined,
   dropWidth: undefined,
